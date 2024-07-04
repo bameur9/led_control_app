@@ -34,6 +34,7 @@ fun MainScreen(onBluetoothRequest: (onSuccess: () -> Unit) -> Unit,  onSendComma
         bottomBar = {
             BottomNavigationBar(navController)
         },
+        
         content = { padding ->
             NavHost(navController, startDestination = "home", Modifier.padding(padding)) {
                 composable("home") {HomeScreen(navController, onBluetoothRequest) }
