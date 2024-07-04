@@ -1,6 +1,8 @@
 package com.example.led_control_app
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Call
@@ -14,6 +16,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -47,19 +51,19 @@ fun BottomNavigationBar(navController: NavController) {
 
     NavigationBar {
         NavigationBarItem(
-            icon = { Icon(Icons.Filled.Home, contentDescription = "Home") },
+            icon = { Image(painter = painterResource(id = R.drawable.home), contentDescription = "Bluetooth", modifier = Modifier.size(24.dp)) },
             label = { Text("Home") },
             selected = currentRoute == "home",
             onClick = { navController.navigate("home") }
         )
         NavigationBarItem(
-            icon = { Icon(Icons.Filled.Build, contentDescription = "Bluetooth") },
+            icon = { Image(painter = painterResource(id = R.drawable.bluetooth), contentDescription = "Bluetooth", modifier = Modifier.size(24.dp)) },
             label = { Text("Bluetooth") },
             selected = currentRoute == "bluetooth",
             onClick = { navController.navigate("bluetooth") }
         )
         NavigationBarItem(
-            icon = { Icon(Icons.Filled.Call, contentDescription = "WiFi") },
+            icon = { Image(painter = painterResource(id = R.drawable.wifi), contentDescription = "Wifi", modifier = Modifier.size(24.dp)) },
             label = { Text("WiFi") },
             selected = currentRoute == "wifi",
             onClick = { navController.navigate("wifi") }
