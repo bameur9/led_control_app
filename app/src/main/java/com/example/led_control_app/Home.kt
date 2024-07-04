@@ -69,7 +69,7 @@ fun HomeScreen(navController: NavController, onBluetoothRequest: (onSuccess: () 
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "LED CONTROL APP",
+                            text = "LED-Ring Control App",
                             style = MaterialTheme.typography.titleLarge,
                             fontSize = 30.sp,
                             textAlign = TextAlign.Center,

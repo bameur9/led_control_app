@@ -1,6 +1,8 @@
 package com.example.led_control_app
 
+import BluetoothViewModel
 import android.Manifest
+import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -12,19 +14,21 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import com.example.led_control_app.services.BluetoothService
 import com.example.led_control_app.ui.theme.Led_Control_AppTheme
 
 @RequiresApi(Build.VERSION_CODES.S)
 class MainActivity : ComponentActivity() {
+    private lateinit var bluetoothViewModel: BluetoothViewModel
 
     private lateinit var bluetoothService: BluetoothService
 
-    private val requestBluetooth = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == RESULT_OK) {
-            bluetoothService.startScan { deviceName ->
-                setConnectedDeviceName(deviceName)
-            }
+    private val requestBluetooth = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
+        if(result.resultCode == Activity.RESULT_OK){
+            bluetoothService.startScanBluetooth()
+        }else {
+            // Handle the case where Bluetooth was not enable
         }
     }
 
@@ -39,6 +43,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         bluetoothService = BluetoothService(this)
+
         enableEdgeToEdge()
         setContent {
             Led_Control_AppTheme {
@@ -53,6 +58,9 @@ class MainActivity : ComponentActivity() {
                     },
                     onSendCommand = { command ->
                         bluetoothService.sendCommand(command)
+                    },
+                    onSendWifiCredentials = { ssid, password ->
+                        bluetoothService.sendWifiCredentials(ssid, password)
                     }
                 )
             }
@@ -88,7 +96,7 @@ class MainActivity : ComponentActivity() {
             } else {
                 // Start scanning and handle results via ViewModel
                 bluetoothService.startScan { deviceName ->
-                    bluetoothViewModel.setConnectedDeviceName(deviceName) // Use ViewModel here
+                    bluetoothViewModel.setConnectedDeviceName(deviceName.toString()) // Use ViewModel here
                 }
             }
         }

@@ -19,6 +19,8 @@ class BluetoothService(private val context: Context) {
     private var bluetoothDevice: BluetoothDevice? = null
     private var bluetoothSocket: BluetoothSocket? = null
 
+    private var isConnected: Boolean = false // Track connection status
+
     fun startScan(param: (Any) -> Unit) {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
@@ -37,6 +39,26 @@ class BluetoothService(private val context: Context) {
         }
     }
 
+    fun startScanBluetooth() {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                context as Activity, arrayOf(Manifest.permission.BLUETOOTH_SCAN), PERMISSION_REQUEST_CODE
+            )
+            return
+        }
+
+        val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter.bondedDevices
+        pairedDevices?.forEach { device ->
+            if (device.name == "ESP32_LED_Control") {
+                bluetoothDevice = device
+                connectToDevice(device)
+                return@forEach
+            }
+        }
+    }
+
+
+
     private fun connectToDevice(device: BluetoothDevice) {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
@@ -51,6 +73,7 @@ class BluetoothService(private val context: Context) {
             val socket = device.createInsecureRfcommSocketToServiceRecord(MY_UUID)
             socket.connect()
             bluetoothSocket = socket
+            isConnected = true
             Log.d(TAG, "Connected to ${device.name}")
         } catch (e: IOException) {
             Log.e(TAG, "Could not connect to device", e)
@@ -61,9 +84,11 @@ class BluetoothService(private val context: Context) {
                 val m = clazz.getMethod("createRfcommSocket", *paramTypes)
                 val fallbackSocket = m.invoke(device, 1) as BluetoothSocket
                 fallbackSocket.connect()
+                isConnected = true // Update connection status on fallback success
                 bluetoothSocket = fallbackSocket
                 Log.d(TAG, "Connected to ${device.name} with fallback")
             } catch (e2: Exception) {
+                isConnected = false // Update connection status on failure
                 Log.e(TAG, "Couldn't establish Bluetooth connection!", e2)
             }
         }
@@ -84,6 +109,20 @@ class BluetoothService(private val context: Context) {
             Log.e(TAG, "Error sending command", e)
         }
     }
+
+
+    fun sendWifiCredentials(ssid: String, password: String) {
+        val credentials = "$ssid,$password"
+        sendCommand(credentials)
+    }
+
+    fun checkConnectionStatus(): Boolean {
+        // Check if the socket is connected and update the status
+        return bluetoothSocket?.isConnected ?: false && isConnected
+    }
+
+
+
 
     companion object {
         private const val TAG = "BluetoothService"

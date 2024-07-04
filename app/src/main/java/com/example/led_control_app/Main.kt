@@ -26,7 +26,10 @@ import androidx.navigation.compose.rememberNavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(onBluetoothRequest: (onSuccess: () -> Unit) -> Unit,  onSendCommand: (String) -> Unit) {
+fun MainScreen(onBluetoothRequest: (onSuccess: () -> Unit) -> Unit,
+               onSendCommand: (String) -> Unit,
+               onSendWifiCredentials: (String, String) -> Unit
+) {
     val navController = rememberNavController()
 
     Scaffold(
@@ -39,7 +42,7 @@ fun MainScreen(onBluetoothRequest: (onSuccess: () -> Unit) -> Unit,  onSendComma
             NavHost(navController, startDestination = "home", Modifier.padding(padding)) {
                 composable("home") {HomeScreen(navController, onBluetoothRequest) }
                 composable("bluetooth") { BluetoothScreen( onBluetoothRequest, onSendCommand) }
-                composable("wifi") { WifiScreen() }
+                composable("wifi") { WifiScreen(onBluetoothRequest, onSendWifiCredentials) }
             }
         }
     )
