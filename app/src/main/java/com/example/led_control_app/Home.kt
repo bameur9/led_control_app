@@ -1,5 +1,6 @@
 package com.example.led_control_app
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -22,11 +24,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(navController: NavController, onBluetoothRequest: (onSuccess: () -> Unit) -> Unit){
@@ -35,16 +39,16 @@ fun HomeScreen(navController: NavController, onBluetoothRequest: (onSuccess: () 
             TopAppBar(
                 title = { Text("Home", style = MaterialTheme.typography.titleLarge,
                     fontSize = 30.sp,
-                    color = MaterialTheme.colorScheme.primary,
+                    color =  MaterialTheme.colorScheme.onSurface,
                     textAlign = TextAlign.Center)
                 }
             )
         },
-        content = { padding ->
+        content = {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(top = 100.dp),
+                    .padding(top = 10.dp),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -56,28 +60,29 @@ fun HomeScreen(navController: NavController, onBluetoothRequest: (onSuccess: () 
                                 colors = listOf(Color(0xFFFFFFFF), Color(0x00003FEC))
                             )
                         )
-                        .padding(16.dp)
+
                 ) {
                     Column(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp),
+                            .fillMaxSize(),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "Willkommen bei der App, mit der Sie Ihre LEDs aus der Ferne steuern können",
+                            text = "LED CONTROL APP",
                             style = MaterialTheme.typography.titleLarge,
-                            fontSize = 18.sp,
-                            textAlign = TextAlign.Center
+                            fontSize = 30.sp,
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.onSurface
                         )
 
-                        Spacer(modifier = Modifier.height(32.dp))
+                        Spacer(modifier = Modifier.height(100.dp))
 
                         Text(
-                            text = "Comment voulez-vous le contrôler ?",
+                            text = "Connect via ",
                             style = MaterialTheme.typography.bodyLarge,
-                            textAlign = TextAlign.Center
+                            textAlign = TextAlign.Center,
+                            fontSize = 18.sp
 
                         )
 
@@ -93,6 +98,7 @@ fun HomeScreen(navController: NavController, onBluetoothRequest: (onSuccess: () 
                                         navController.navigate("bluetooth")
                                     }
                                 },
+                                elevation = ButtonDefaults.buttonElevation(defaultElevation = 10.dp),
                                 modifier = Modifier.width(160.dp)
                             ) {
                                 Text(
@@ -102,6 +108,7 @@ fun HomeScreen(navController: NavController, onBluetoothRequest: (onSuccess: () 
                             }
                             Button(
                                 onClick = { navController.navigate("wifi") },
+                                elevation = ButtonDefaults.buttonElevation(defaultElevation = 10.dp),
                                 modifier = Modifier.width(160.dp)
                             ) {
                                 Text(

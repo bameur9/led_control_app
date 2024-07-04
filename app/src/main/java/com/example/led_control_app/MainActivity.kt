@@ -1,7 +1,6 @@
 package com.example.led_control_app
 
 import android.Manifest
-import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -23,7 +22,9 @@ class MainActivity : ComponentActivity() {
 
     private val requestBluetooth = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == RESULT_OK) {
-            bluetoothService.startScan()
+            bluetoothService.startScan { deviceName ->
+                setConnectedDeviceName(deviceName)
+            }
         }
     }
 
@@ -79,13 +80,16 @@ class MainActivity : ComponentActivity() {
     private fun enableBluetoothAndScan() {
         val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
         if (bluetoothAdapter == null) {
-            // Device doesn't support Bluetooth
+            // Handle the scenario where the device doesn't support Bluetooth
         } else {
             if (!bluetoothAdapter.isEnabled) {
                 val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
                 requestBluetooth.launch(enableBtIntent)
             } else {
-                bluetoothService.startScan()
+                // Start scanning and handle results via ViewModel
+                bluetoothService.startScan { deviceName ->
+                    bluetoothViewModel.setConnectedDeviceName(deviceName) // Use ViewModel here
+                }
             }
         }
     }

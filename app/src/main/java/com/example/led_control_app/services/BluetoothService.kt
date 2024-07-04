@@ -3,13 +3,9 @@ package com.example.led_control_app.services
 import android.Manifest
 import android.app.Activity
 import android.bluetooth.*
-import android.bluetooth.le.ScanCallback
-import android.bluetooth.le.ScanResult
 import android.content.Context
 import android.content.pm.PackageManager
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import java.io.IOException
 import java.util.UUID
@@ -23,7 +19,7 @@ class BluetoothService(private val context: Context) {
     private var bluetoothDevice: BluetoothDevice? = null
     private var bluetoothSocket: BluetoothSocket? = null
 
-    fun startScan() {
+    fun startScan(param: (Any) -> Unit) {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
                 context as Activity, arrayOf(Manifest.permission.BLUETOOTH_SCAN), PERMISSION_REQUEST_CODE

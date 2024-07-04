@@ -26,7 +26,7 @@ fun WifiScreen() {
             TopAppBar(
                 title = { Text("WIFI", style = MaterialTheme.typography.titleLarge,
                     fontSize = 30.sp,
-                    color = MaterialTheme.colorScheme.primary,
+                    color =  MaterialTheme.colorScheme.onSurface,
                     textAlign = TextAlign.Center)
                 }
             )
